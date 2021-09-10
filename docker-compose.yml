@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/app/src
+    ports:
+      - "8000:3000"
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_URL=postgres://postgres:admin@postgres:5432/nestjs_dockerized
+
+  postgres:
+    ports:
+      - "35000:5432"
+    image: postgres
+    restart: always
+    volumes:
+      - nestjs-dockerized-postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=nestjs_dockerized
+volumes:
+  nestjs-dockerized-postgres:
